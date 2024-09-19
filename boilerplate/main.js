@@ -3,22 +3,23 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import * as KIRBY from "./kirby.js";
 
-const map_limits = 25
-const kirby_amount = 10
+const map_limits = 50
+const kirby_amount = 30
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
+const camera = new THREE.PerspectiveCamera( 
   75,
   window.innerWidth / window.innerHeight,
   0.2,
   1000
 );
+camera.position.y += 1
 
 const clock = new THREE.Clock()
 
 const light = new THREE.DirectionalLight(0x404040, 20);
 const ambientLight = new THREE.AmbientLight(0x404040, 10);
-light.position.z = 100;
+light.position.y = 100;
 
 const listener = new THREE.AudioListener();
 camera.add( listener );
@@ -33,6 +34,20 @@ document.body.appendChild(renderer.domElement);
 let loader = new GLTFLoader();
 const gltf = await loader.loadAsync("./kirby_animated_3_animations/scene.gltf");
 gltf.scene.scale.set(0.001, 0.001, 0.001);
+
+const flatWorld = await loader.loadAsync("./minecraft_flat_world/scene.gltf");
+flatWorld.scene.scale.set(10, 10, 10);
+scene.add(flatWorld.scene)
+flatWorld.scene.position.y = -21
+
+const skyboxLoader = new THREE.TextureLoader();
+const skyboxtexture = await skyboxLoader.loadAsync("./free_-_skybox_blue_desert/textures/Scene_-_Root_diffuse.jpeg");
+skyboxtexture.mapping = THREE.EquirectangularReflectionMapping;
+skyboxtexture.colorSpace = THREE.SRGBColorSpace;
+skyboxtexture.flipY = false;
+
+scene.background = skyboxtexture;
+
 
 let raycaster = new THREE.Raycaster();
 let pointer = new THREE.Vector2();
@@ -58,20 +73,32 @@ let shotgunshoot = mixer.clipAction(shotgunshootClip)
 shotgunidle.play()
 
 const shotgunSound = new THREE.Audio( listener );
+const kirbyFalling = new THREE.Audio( listener );
+const kirbyTheme = new THREE.Audio( listener );
 
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load( 'shotgun.mp3', function( buffer ) {
+audioLoader.load( 'assets/shotgun.mp3', function( buffer ) {
 	shotgunSound.setBuffer( buffer );
-	shotgunSound.setLoop( true );
+	shotgunSound.setLoop( false );
 	shotgunSound.setVolume( 0.5 );
 });
+audioLoader.load( 'assets/kirby-falling.mp3', function( buffer ) {
+	kirbyFalling.setBuffer( buffer );
+	kirbyFalling.setLoop( false );
+	kirbyFalling.setVolume( 0.3 );
+});
+audioLoader.load( 'assets/kirbytheme.mp3', function( buffer ) {
+	kirbyTheme.setBuffer( buffer );
+	kirbyTheme.setLoop( true );
+	kirbyTheme.setVolume( 0.1 );
+  kirbyTheme.play()
+});
+
 
 let shooting = false
 document.addEventListener( 'pointerdown', onPointerDown );
 
-
-
-function onPointerDown( event ) {  
+function onPointerDown() {  
   if (shooting === false) {
     shotgunidle.stop()
     shotgunshoot.play()
@@ -83,46 +110,34 @@ function onPointerDown( event ) {
     raycaster.setFromCamera( pointer, camera );
   
     const intersects = raycaster.intersectObjects( kirbyList.map((kirby) => kirby.gltfScene), true );
-    console.log(intersects.length != 0);
+
     if(intersects.length != 0) {
+      kirbyFalling.play()
       let closestKirby = intersects[0]
-      if (closestKirby.distance >= 10) {
-        console.log("kirby trop loin");
-      }
-      else {
+      if (closestKirby.distance <= 10) {
         closestKirby = closestKirby.object
-        while (closestKirby.name != "Sketchfab_Scene") {
-          console.log(closestKirby);
-          
+        while (closestKirby.name != "Sketchfab_Scene") {          
           closestKirby = closestKirby.parent
-        }
+        }        
+        
         scene.remove(closestKirby)
+        for (let index = 0; index < kirbyList.length; index++) {
+          if (kirbyList[index].gltfScene.uuid === closestKirby.uuid) {
+            kirbyList[index].kirbySound = null
+            kirbyList.splice(index, 1)
+          }
+        }   
       }
     }
-
     setTimeout(() => {
       shotgunshoot.stop()
       shotgunidle.play()
-      shotgunSound.stop();
       shooting = false
     }, 983.3333492279053)
   }
 
   
 }
-
-
-camera.position.z = 0;
-renderer.render(scene, camera);
-
-
-const geometry = new THREE.PlaneGeometry(map_limits, map_limits);
-const material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
-const plane = new THREE.Mesh(geometry, material);
-plane.rotation.x += 1.5708;
-plane.position.y -= 1;
-scene.add(plane);
-
 
 //Handle Player Deplacement
 const controls = new PointerLockControls(camera, document.body);
@@ -182,7 +197,7 @@ document.addEventListener("keyup", (e) => {
 let kirbyList = [];
 for (let index = 0; index < kirby_amount; index++) {
   let kirby = new KIRBY.Kirby(gltf, scene, light, listener, audioLoader);
-  kirby.createKirby([Math.floor((Math.random() * 20) - 10), Math.floor((Math.random() * 20) - 10)]);
+  kirby.createKirby([Math.floor((Math.random() * map_limits) - map_limits/2), Math.floor((Math.random() * map_limits) - map_limits/2)]);
   kirby.kirbyAnimation(0);
   kirby.kirbyDeplacement();
   kirbyList.push(kirby);
@@ -205,7 +220,7 @@ function animate() {
     controls.moveRight(0.1);
   }
 
-  //Kirbies handler
+  //Kirbies updater
   for (let index = 0; index < kirbyList.length; index++) {
     kirbyList[index].mixer.update(delta)
     kirbyList[index].kirbyUpdate()

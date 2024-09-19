@@ -1,0 +1,11 @@
+Model Information:
+* title:	Minecraft Flat World
+* source:	https://sketchfab.com/3d-models/minecraft-flat-world-82853fd6bcf846ab8d7798257e99fc81
+* author:	Walingtone Studios (https://sketchfab.com/Israt.Jerin.Jui)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Minecraft Flat World" (https://sketchfab.com/3d-models/minecraft-flat-world-82853fd6bcf846ab8d7798257e99fc81) by Walingtone Studios (https://sketchfab.com/Israt.Jerin.Jui) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

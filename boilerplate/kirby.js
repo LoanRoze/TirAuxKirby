@@ -2,7 +2,7 @@ import * as THREE from "three";
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const audioLoader = new THREE.AudioLoader();
-const audioBuffer = await audioLoader.loadAsync( 'kirbyhi.mp3' );
+const audioBuffer = await audioLoader.loadAsync( 'assets/kirbyhi.mp3' );
 
 export class Kirby {
     constructor(gltf, scene, light, listener, audioLoader) {
@@ -93,9 +93,13 @@ export class Kirby {
     kirbyUpdate() {
         this.gltfScene.getWorldDirection(this.vector)
 
-        if (Math.floor(Math.random() * 200) === 1) {
+        if ((Math.floor(Math.random() * 1000) === 1) && (this.kirbySound != null)) {
             this.kirbySound.play()
-            setTimeout( () => this.kirbySound.stop(), 1000)
+            setTimeout( () => {
+                if (this.kirbySound != null) {
+                    this.kirbySound.stop()
+                }
+            }, 1400)
         }
         if (this.running) {
             this.gltfScene.position.x += this.vector.x / 100;
@@ -108,10 +112,6 @@ export class Kirby {
         else {
             this.gltfScene.rotation.y += this.randomSpin
         }
-    }
-
-    kirbyKill() {
-        this.scene.remove(this.gltfScene)
     }
 
 }
