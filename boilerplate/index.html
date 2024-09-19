@@ -15,17 +15,29 @@
         bottom: 0;
       }
       img {
+        user-select: none;
         position: relative;
         width: 5vw;
         height: 5vw;
         top: calc(50% - 2.5vw);
         left: calc(50% - 2.5vw);
       }
+      .winText {
+        display: none;
+        font-size: x-large;
+        color: aliceblue;
+        position: absolute;
+        width: 10vw;
+        height: 5vw;
+        top: calc(50% - 1.5vw);
+        left: calc(50% - 5vw);
+      }
       
     </style>
   </head>
   <body>
     <div class="pointer"><img class="crosshair" src="assets/crosshair.png" alt=""></div>
+    <div class="winText"> YOU WIN ! </div>
     <script type="module" src="/main.js"></script>
   </body>
 </html>

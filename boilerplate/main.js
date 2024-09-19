@@ -32,16 +32,16 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 let loader = new GLTFLoader();
-const gltf = await loader.loadAsync("./kirby_animated_3_animations/scene.gltf");
+const gltf = await loader.loadAsync("./models/kirby_animated_3_animations/scene.gltf");
 gltf.scene.scale.set(0.001, 0.001, 0.001);
 
-const flatWorld = await loader.loadAsync("./minecraft_flat_world/scene.gltf");
+const flatWorld = await loader.loadAsync("./models/minecraft_flat_world/scene.gltf");
 flatWorld.scene.scale.set(10, 10, 10);
 scene.add(flatWorld.scene)
 flatWorld.scene.position.y = -21
 
 const skyboxLoader = new THREE.TextureLoader();
-const skyboxtexture = await skyboxLoader.loadAsync("./free_-_skybox_blue_desert/textures/Scene_-_Root_diffuse.jpeg");
+const skyboxtexture = await skyboxLoader.loadAsync("./models/free_-_skybox_blue_desert/textures/Scene_-_Root_diffuse.jpeg");
 skyboxtexture.mapping = THREE.EquirectangularReflectionMapping;
 skyboxtexture.colorSpace = THREE.SRGBColorSpace;
 skyboxtexture.flipY = false;
@@ -52,7 +52,7 @@ scene.background = skyboxtexture;
 let raycaster = new THREE.Raycaster();
 let pointer = new THREE.Vector2();
 
-const shotgun = await loader.loadAsync("./fps_arms_remington_shotgun/scene.gltf");
+const shotgun = await loader.loadAsync("./models/fps_arms_remington_shotgun/scene.gltf");
 
 const playerGroup = new THREE.Group();
 playerGroup.add(camera);
@@ -226,6 +226,14 @@ function animate() {
     kirbyList[index].kirbyUpdate()
   }
   mixer.update(delta)
+  console.log(kirbyList);
+  
+  console.log(document.querySelector(".winText").style.display);
+  
+  if (kirbyList.length === 0) {
+    document.querySelector(".winText").style.display = "block"
+    document.querySelector(".crosshair").style.display = "none";    
+  }
 
   renderer.render(scene, camera);
 }
