@@ -1,0 +1,11 @@
+Model Information:
+* title:	Kirby Animated (3 Animations)
+* source:	https://sketchfab.com/3d-models/kirby-animated-3-animations-3bfe05c6a04f43a19cf377e0a4a171d7
+* author:	KK's Channel (https://sketchfab.com/KKsChannel_)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Kirby Animated (3 Animations)" (https://sketchfab.com/3d-models/kirby-animated-3-animations-3bfe05c6a04f43a19cf377e0a4a171d7) by KK's Channel (https://sketchfab.com/KKsChannel_) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
